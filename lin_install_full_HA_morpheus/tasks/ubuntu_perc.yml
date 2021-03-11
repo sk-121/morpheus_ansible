@@ -1,0 +1,128 @@
+---
+- name: Block for if Perona is not already installed
+  block:
+    - name: Percona | Install Percona yum repo 
+      yum:
+        name: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+        state: present
+        disable_gpg_check: True
+      
+    - name: Percona | Setup repos using percona-release "{{ release }}"
+      command: "{{ item }}"
+      with_items:
+        - "percona-release enable '{{ release }}' release"
+        - "percona-release setup '{{ release }}' -y"
+        - "percona-release enable-only '{{ release }}' release"
+        - "percona-release enable tools release"
+        - "percona-release show"
+
+    - name: Percona | Install percona80
+      package:
+        name: percona-xtradb-cluster
+        state: present
+      when: release == 'pxc-80'
+
+    - name: Percona | Install percona57
+      package:
+        name: Percona-XtraDB-Cluster-57
+        state: present
+      when: release == 'pxc-57'
+  when: "'percona-release' not in ansible_facts.packages"
+
+- name: Percona | Install required packages for CentOS8
+  yum: 
+    name: platform-python-pip
+    state: present
+  when: >
+    isCENTOS8
+    and "'pip' not in ansible_facts.packages"
+
+- name: Percona | Install pip for CentOS7
+  yum:
+    name: python2-pip
+    state: present
+  when: > 
+    isCENTOS7
+    and "'pip' not in ansible_facts.packages"
+
+- name: Percona | Install the required python packages for CentOS8
+  pip:
+    name: ['PyMySQL']
+    state: present
+  when: isCENTOS8
+
+- name: Percona | Install CentOS mysql packages
+  yum:
+    name: ['MySQL-python']
+    state: present
+  when: isCENTOS7
+
+- name: Percona | Start service
+  service:
+    name: mysql
+    state: started
+    enabled: True
+
+- name: Percona | Get the temporary password for "{{ release }}"
+  shell: "grep 'temporary password' /var/log/mysqld.log | awk -F' ' '{print $13}' | tr -d '[:blank:]'"
+  register: mysql_root_temp_password
+  no_log: true
+  when: release == "pxc-80"
+
+- name: Percona | Get the temporary password for "{{ release }}"
+  shell: "grep 'temporary password' /var/log/mysqld.log | awk -F' ' '{print $11}' | tr -d '[:blank:]'"
+  register: mysql_root_temp_password
+  no_log: true
+  when: release == "pxc-57"
+
+- name: Percona | Template creds
+  template:
+    src: my.cnf.j2
+    dest: ~/.my.cnf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Percona | Reset the root user in the DB
+  shell: 'mysql -u root -e "ALTER USER ''root''@''localhost'' IDENTIFIED BY ''{{ mysql_root_password }}''" --connect-expired-password'
+  register: reset_results
+  ignore_errors: True
+
+- name: Percona | Run query for testing
+  mysql_query:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    query: SHOW databases
+  register: databases
+
+- name: Percona | Fail if we can not query DB with the new password
+  fail:
+    msg: "Could not run query on DB with new password"
+  when: databases.failed == True
+
+- name: Percona | Create sstuser user
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: sstuser
+    priv: '*.*:RELOAD,LOCK TABLES,PROCESS,REPLICATION CLIENT'
+    password: "{{ mysql_sstuser_password }}"
+    state: present
+
+- name: Percona | Flush privileges
+  mysql_query:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    query: FLUSH PRIVILEGES
+
+- name: Percona | Stop the DB
+  service:
+    name: mysql
+    state: stopped
+
+- name: Percona | stop the firewall
+  service:
+    name: firewalld
+    state: stopped
+  when: firewall_state == 'running'
+

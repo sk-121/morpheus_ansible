@@ -1,0 +1,44 @@
+- name: Rabbit | Include version.yml
+  include_vars: 
+    dir: vars
+
+- name: debug
+  debug:
+    msg: "{{ ansible_distribution_major_version }}"
+
+- name: Rabbit | Install epel 
+  package:
+    name: epel-release
+    state: present
+  when: >
+    isCENTOS7
+    or isCENTOS8
+
+- name: Rabbit | Install erlang
+  package:
+    name: erlang
+    state: present
+
+- name: Rabbit | get packagae
+  get_url:
+    url: https://dl.bintray.com/rabbitmq/rpm/rabbitmq-server/{{ r_release }}/el/{{ ansible_distribution_major_version }}/noarch/{{ r_rpm }}.el{{ ansible_distribution_major_version }}.noarch.rpm
+    dest: /tmp/{{ r_rpm }}.rpm
+
+- name: Rabbit | Import a key from a url
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+
+- name: Rabbit | Install rabbit rpms
+  package:
+    name: /tmp/{{ r_rpm }}.rpm
+    state: present
+
+- name: Rabbit | Enable Rabbit
+  service:
+    name: rabbitmq-server
+    enabled: True
+  
+
+
+    

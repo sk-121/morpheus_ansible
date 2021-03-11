@@ -1,0 +1,3 @@
+p_release: 'pxc-57'
+r_release: v3.8.x
+r_rpm: rabbitmq-server-3.8.14-1
