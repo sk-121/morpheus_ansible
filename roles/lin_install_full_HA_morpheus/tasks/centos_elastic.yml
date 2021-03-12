@@ -3,10 +3,36 @@
     name: java-{{ jdk_version }}
     state: present
   
-- name: Elastic | Check verion of OpenJDK
+- name: Elastic | Check version of OpenJDK
   command: 'java -version'
   register: openjdk_version
 
 - name: Elastic | Print OpenJDK version
   debug:
-    msg: "{{ openjdk_version.stdout_lines }}"
+    msg: "{{ openjdk_version.stderr_lines }}"
+
+- name: Elastic | Import a key from a url
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: Elastic | Get RPM from url
+  get_url:
+    url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ e_version }}-x86_64.rpm
+    dest: /tmp/elasticsearch-{{ e_version }}.rpm
+
+- name: Elastic | Install the RPM from file
+  package:
+    name: /tmp/elasticsearch-{{e_version}}.rpm
+    state: present
+
+- name: Elastic | Update permisssions
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+  with_items: 
+    - /var/log/elasticsearch/
+    - /usr/share/elasticsearch/
+  
