@@ -1,0 +1,8 @@
+      node.name: "{{ hostvars[inventory_hostname].node }}" ##unique name of this node
+      network.host: {{ hostvars[inventory_hostname].ansible_host }} ##ip of this node
+      http.port: 9200
+      discovery.seed_hosts: [{% for e_host in groups['elasticsearch'] %}"{{ hostvars[e_host].ansible_host }}"{% if not loop.last %},{% endif %}{% endfor %}] ## add all cluster node ip's
+      cluster.initial_master_nodes: [{% for e_host in groups['elasticsearch'] %}"{{ hostvars[e_host].ansible_host }}"{% if not loop.last %},{% endif %}{% endfor %}] ## add all cluster node ip's
+      path.logs: /var/log/elasticsearch ## Or your preferred location.
+      path.data: /usr/share/elasticsearch/ ## Or your preferred location.
+      discovery.zen.minimum_master_nodes: 2
