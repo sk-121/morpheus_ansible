@@ -1,0 +1,12 @@
+- name: elastic | Install OpenJDK
+  package:
+    name: java-{{ jdk_version }}
+    state: present
+  
+- name: Elastic | Check verion of OpenJDK
+  command: 'java -version'
+  register: openjdk_version
+
+- name: Elastic | Print OpenJDK version
+  debug:
+    msg: "{{ openjdk_version.stdout_lines }}"

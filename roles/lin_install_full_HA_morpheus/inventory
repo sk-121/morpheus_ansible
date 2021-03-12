@@ -8,6 +8,9 @@ r_node1 ansible_host=10.0.0.131 node=node01
 r_node2 ansible_host=10.0.0.132 node=node02
 r_node3 ansible_host=10.0.0.133 node=node03
 
+[elastic]
+e_node1 ansible_host=10.0.0.137 node=node01
+
 [percona:vars]
 p_release='pxc-57'
 percona_bind_address=0.0.0.0
@@ -18,3 +21,6 @@ mysql_morpheus_password=
 [rabbit:vars]
 r_release=v3.6.x
 r_rpm=rabbitmq-server-3.6.16-1
+
+[elastic:vars]
+jdk_version=1.8.0-openjdk

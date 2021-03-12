@@ -24,3 +24,10 @@
     groups['rabbit'] is defined 
     and inventory_hostname in groups['rabbit']
     and rabbit
+
+- name: Include Elastic Install
+  include: "{{ ansible_distribution | lower}}_elastic.yml"
+  when: > 
+    groups['elastic'] is defined 
+    and inventory_hostname in groups['elastic']
+    and elastic
