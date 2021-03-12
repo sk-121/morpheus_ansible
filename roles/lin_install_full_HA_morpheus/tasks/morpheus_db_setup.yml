@@ -6,7 +6,7 @@
     group: root
     mode: 0644
 
-- name: morphues_db_setup | Setup for node1
+- name: morphues_db_setup | Setup for p_node1
   block:
   - name: Bootstrap the first node
     service: 
@@ -40,7 +40,7 @@
 - name: morphues_db_setup | Certs Fetch from remote
   fetch:
     src: "/var/lib/mysql/{{ item }}" 
-    dest: "/tmp/{{ hostvars['node1'].node }}_{{ item }}"
+    dest: "/tmp/{{ hostvars['p_node1'].node }}_{{ item }}"
   with_items:
     - ca.pem
     - server-cert.pem
@@ -48,7 +48,7 @@
 
 - name: morphues_db_setup | Certs Copy to remote
   copy:
-    src: "/tmp/{{ hostvars['node1'].node }}_{{ item }}/node1/var/lib/mysql/{{ item }}"
+    src: "/tmp/{{ hostvars['p_node1'].node }}_{{ item }}/p_node1/var/lib/mysql/{{ item }}"
     dest: "/var/lib/mysql/{{ item }}"
     backup: True
   with_items:

@@ -1,16 +1,14 @@
-- name: Rabbit | Run Rabbit in detached mode
-  command: 'rabbitmq-server -detached'
-
 - name: Rabbit | Fetch erlang cookie from remote
   fetch:
     src: "/var/lib/rabbitmq/{{ item }}" 
-    dest: "/tmp/{{ hostvars['node1'].node }}_{{ item }}"
+    dest: "/tmp/{{ hostvars['r_node1'].node }}_{{ item }}"
+    flat: True
   with_items:
     - .erlang.cookie
 
 - name: Rabbit | Copy erlang cookie to remote
   copy:
-    src: "/tmp/{{ hostvars['node1'].node }}_{{ item }}/node1/var/lib/rabbitmq/{{ item }}"
+    src: "/tmp/{{ hostvars['r_node1'].node }}_{{ item }}"
     dest: "/var/lib/rabbitmq/{{ item }}"
     mode: 0400
     owner: rabbitmq

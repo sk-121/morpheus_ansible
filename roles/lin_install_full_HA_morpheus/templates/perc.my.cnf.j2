@@ -6,8 +6,8 @@ max_connections = 300
 wsrep_provider=/usr/lib64/galera3/libgalera_smm.so
 
 wsrep_cluster_name=morpheusdb-cluster
-#wsrep_cluster_address=gcomm://{{ hostvars['node1'].ansible_host }},{{ hostvars['node2'].ansible_host }},{{ hostvars['node3'].ansible_host }}
-wsrep_cluster_address=gcomm://{% for db_host in groups['perc'] %}{{ hostvars[db_host].ansible_host }}{% if not loop.last %},{% endif %}{% endfor %}
+#wsrep_cluster_address=gcomm://{{ hostvars['p_node1'].ansible_host }},{{ hostvars['p_node2'].ansible_host }},{{ hostvars['p_node3'].ansible_host }}
+wsrep_cluster_address=gcomm://{% for db_host in groups['percona'] %}{{ hostvars[db_host].ansible_host }}{% if not loop.last %},{% endif %}{% endfor %}
 
 wsrep_node_name={{ hostvars[inventory_hostname].node }}
 wsrep_node_address={{ hostvars[inventory_hostname].ansible_host }}

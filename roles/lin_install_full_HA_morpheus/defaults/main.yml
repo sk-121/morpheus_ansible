@@ -1,1 +1,3 @@
 # main file for defaults for vars
+percona: false
+rabbit: false

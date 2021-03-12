@@ -3,15 +3,24 @@
 - name: Include gate.yml
   include: gate.yml
 
-# - name: Include Percona install
-#   include: "{{ ansible_distribution | lower}}_perc.yml"
+- name: Include Percona install
+  include: "{{ ansible_distribution | lower}}_perc.yml"
+  when: groups['percona'] is defined and inventory_hostname in groups['percona']
 
-# - name: Setup Percona for Morpheus
-#   include: morpheus_db_setup.yml
+- name: Setup Percona for Morpheus
+  include: morpheus_db_setup.yml
+  when: groups['percona'] is defined and inventory_hostname in groups['percona']
 
 - name: Include Rabbit Install
   include: "{{ ansible_distribution | lower}}_rabbit.yml"
-  when: "'rabbit' in group_names"
+  when: > 
+    groups['rabbit'] is defined 
+    and inventory_hostname in groups['rabbit']
+    and rabbit
 
 - name: Setup Rabbitmq for morpheus
   include: morpheus_rabbit_setup.yml
+  when: >
+    groups['rabbit'] is defined 
+    and inventory_hostname in groups['rabbit']
+    and rabbit

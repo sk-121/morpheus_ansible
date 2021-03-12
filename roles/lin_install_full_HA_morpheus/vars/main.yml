@@ -1,6 +1,0 @@
-# file for roles variables
-release: 'pxc-57'
-percona_bind_address: 0.0.0.0
-mysql_root_password: 
-mysql_sstuser_password: 
-mysql_morpheus_password: 
