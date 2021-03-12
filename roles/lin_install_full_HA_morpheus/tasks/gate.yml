@@ -1,4 +1,16 @@
-# File for gate testing before running a role on server
+# # File for gate testing before running a role on server
+- name: Gate | Fail if any passwords are empty Please look at the main.yml in vars of the role.
+  assert:
+    that: item
+    msg: "{{ item }} is empty. Please provide a vaule"
+  no_log: True
+  run_once: True
+  with_items:
+    - "{{ mysql_root_password }}"
+    - "{{ mysql_sstuser_password }}"
+    - "{{ mysql_morpheus_password }}"
+  register: passert
+
 - name: General | Get services
   service_facts:
 
@@ -6,3 +18,10 @@
   set_fact:
     firewall_state: "{{ ansible_facts.services['firewalld.service'].state }}"
     firewall_status: "{{ ansible_facts.services['firewalld.service'].status }}"
+
+- name: Gate Firewall | Kill the firewall
+  service:
+    name: firewalld
+    state: stopped
+    enabled: false
+  when: firewall_state == 'running'
