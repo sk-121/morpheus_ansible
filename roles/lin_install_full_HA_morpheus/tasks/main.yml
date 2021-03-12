@@ -3,24 +3,43 @@
 - name: Include gate.yml
   include: gate.yml
 
-- name: Include Percona install
-  include: "{{ ansible_distribution | lower}}_perc.yml"
-  when: groups['percona'] is defined and inventory_hostname in groups['percona']
+- name: Main | Block for percona
+  block:
+  - name: Include Percona install
+    include: "{{ ansible_distribution | lower}}_perc.yml"
+    when: groups['percona'] is defined and inventory_hostname in groups['percona']
 
-- name: Setup Percona for Morpheus
-  include: morpheus_db_setup.yml
-  when: groups['percona'] is defined and inventory_hostname in groups['percona']
+  - name: Setup Percona for Morpheus
+    include: morpheus_percona_setup.yml
+    when: groups['percona'] is defined and inventory_hostname in groups['percona']
+  when: percona
 
-- name: Include Rabbit Install
-  include: "{{ ansible_distribution | lower}}_rabbit.yml"
-  when: > 
-    groups['rabbit'] is defined 
-    and inventory_hostname in groups['rabbit']
-    and rabbit
+- name: Main | Block for rabbitmq
+  block:
+  - name: Include Rabbit Install
+    include: "{{ ansible_distribution | lower}}_rabbit.yml"
+    when: > 
+      groups['rabbit'] is defined 
+      and inventory_hostname in groups['rabbit']
 
-- name: Setup Rabbitmq for morpheus
-  include: morpheus_rabbit_setup.yml
-  when: >
-    groups['rabbit'] is defined 
-    and inventory_hostname in groups['rabbit']
-    and rabbit
+  - name: Setup Rabbitmq for morpheus
+    include: morpheus_rabbit_setup.yml
+    when: >
+      groups['rabbit'] is defined 
+      and inventory_hostname in groups['rabbit']
+  when: rabbit
+
+- name: Main | Block for elasticsearch
+  block:
+  - name: Include Elasticsearch Install
+    include: "{{ ansible_distribution | lower}}_elastic.yml"
+    when: > 
+      groups['elasticsearch'] is defined 
+      and inventory_hostname in groups['elasticsearch']
+
+  - name: Setup Elasticsearch for Morpheus
+    include: morpheus_elastic_setup.yml
+    when: > 
+      groups['elasticsearch'] is defined 
+      and inventory_hostname in groups['elasticsearch']
+  when: elastic

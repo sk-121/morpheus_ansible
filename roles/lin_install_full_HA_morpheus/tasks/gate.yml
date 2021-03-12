@@ -5,6 +5,7 @@
     msg: "{{ item }} is empty. Please provide a vaule"
   no_log: True
   run_once: True
+  when: percona
   with_items:
     - "{{ mysql_root_password }}"
     - "{{ mysql_sstuser_password }}"
