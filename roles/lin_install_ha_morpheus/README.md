@@ -1,7 +1,7 @@
 lin_install_3node_HA_morpheus
 =========================
 
-This ansible role will deploy a 3 node HA Morpheus cluster. The goal is to install all parts of morphues to a working state. 
+This ansible role will deploy a HA Morpheus cluster. The goal is to install all parts of morphues to a working state. 
 
 ### Requirements
 Currently Morpheus requires some network setup for the 3 node install. 

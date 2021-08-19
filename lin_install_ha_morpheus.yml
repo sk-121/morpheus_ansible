@@ -11,4 +11,4 @@
   tasks:
     - name: Install full HA environment
       include_role: 
-        name: lin_install_full_HA_morpheus
+        name: lin_install_ha_morpheus
