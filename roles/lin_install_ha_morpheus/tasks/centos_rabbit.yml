@@ -15,20 +15,31 @@
     name: erlang
     state: present
 
-- name: Rabbit | Import a key from a url
-  ansible.builtin.rpm_key:
-    state: present
-    key: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
-
-- name: Rabbit | get packagae
-  get_url:
-    url: https://dl.bintray.com/rabbitmq/rpm/rabbitmq-server/{{ r_release }}/el/{{ ansible_distribution_major_version }}/noarch/{{ r_rpm }}.el{{ ansible_distribution_major_version }}.noarch.rpm
-    dest: /tmp/{{ r_rpm }}.rpm
-
-- name: Rabbit | Install rabbit rpms
+- name: Rabbit | Install erlang
   package:
-    name: /tmp/{{ r_rpm }}.rpm
+    name: erlang
     state: present
+
+- name: Rabbit | Install rabbitmq-server
+  package:
+    name: rabbitmq-server
+    state: present
+
+# - name: Rabbit | Import a key from a url
+#   ansible.builtin.rpm_key:
+#     state: present
+#     key: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+
+# - name: Rabbit | get packagae
+#   get_url:
+#     #url: https://dl.bintray.com/rabbitmq/rpm/rabbitmq-server/{{ r_release }}/el/{{ ansible_distribution_major_version }}/noarch/{{ r_rpm }}.el{{ ansible_distribution_major_version }}.noarch.rpm
+#     url: https://github.com/rabbitmq/rabbitmq-server/releases/download/{{ r_release }}/{{ r_rpm }}.el{{ ansible_distribution_major_version }}.noarch.rpm
+#     dest: /tmp/{{ r_rpm }}.rpm
+
+# - name: Rabbit | Install rabbit rpms
+#   package:
+#     name: /tmp/{{ r_rpm }}.rpm
+#     state: present
 
 - name: Rabbit | Enable Rabbit
   service:

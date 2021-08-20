@@ -1,0 +1,14 @@
+## Url on which Morpheus will be reachable.
+## For more details on configuring appliance_url see:
+## https://docs.morpheusdata.com
+appliance_url 'https://{{ ansible_hostname }}'
+elasticsearch['es_hosts'] = {'{{ hostvars[inventory_hostname].ansible_host }}' => 9200, '{{ hostvars[e_node2].ansible_host }}' => 9200, '{{ hostvars[e_node3].ansible_host }}' => 9200}
+elasticsearch['node_name'] = '{{ hostvars[inventory_hostname].ansible_host }}'
+elasticsearch['host'] = '0.0.0.0'
+rabbitmq['host'] = '0.0.0.0'
+rabbitmq['nodename'] = 'rabbit@tklxmorpheus01'
+mysql['enable'] = false
+mysql['host'] = '10.0.0.149'
+mysql['morpheus_db'] = 'morpheus'
+mysql['morpheus_db_user'] = 'morpheus'
+mysql['morpheus_password'] = 'test'

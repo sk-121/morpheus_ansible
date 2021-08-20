@@ -1,0 +1,20 @@
+- name: GATE | Test Operating system Type.
+  assert:
+    that: > 
+      ansible_distribution | lower == 'centos'
+      or ansible_distribution | lower == 'redhat'
+      or ansible_distribution | lower == 'ubuntu'
+    fail_msg: "Your Linux Distribution is not supported for this role"
+    success_msg: "{{ ansible_distribution }} is supported the install will proceed"
+
+- set_fact: opt_avail="{{ (item.size_available|float / 1000000000) | round(1, 'common')  }}"
+  with_items: '{{ ansible_mounts }}'
+  when: item.mount == '/opt'
+  no_log: true
+
+- name: GATE | /opt test for space.
+  assert:
+    that: 
+      - opt_avail|int >= 5 
+    fail_msg: "There is less than 5GB available to install morpheus into /opt" 
+

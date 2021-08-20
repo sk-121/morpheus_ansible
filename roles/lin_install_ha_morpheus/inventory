@@ -1,28 +1,28 @@
 [percona]
-p_node1 ansible_host=10.0.0.134 node=node01
-p_node2 ansible_host=10.0.0.136 node=node02
-p_node3 ansible_host=10.0.0.135 node=node03
+p_node1 ansible_host=10.0.0.149 node=node01
+p_node2 ansible_host=10.0.0.142 node=node02
+p_node3 ansible_host=10.0.0.153 node=node03
 
 [rabbit]
-r_node1 ansible_host=10.0.0.131 node=node01
-r_node2 ansible_host=10.0.0.132 node=node02
-r_node3 ansible_host=10.0.0.133 node=node03
+r_node1 ansible_host=10.0.0.141 node=node01
+r_node2 ansible_host=10.0.0.146 node=node02
+r_node3 ansible_host=10.0.0.145 node=node03
 
 [elasticsearch]
 e_node1 ansible_host=10.0.0.141 node=node01
-e_node2 ansible_host=10.0.0.142 node=node02
-e_node3 ansible_host=10.0.0.143 node=node03
+e_node2 ansible_host=10.0.0.146 node=node02
+e_node3 ansible_host=10.0.0.145 node=node03
 
 [percona:vars]
 p_release='pxc-57'
 percona_bind_address=0.0.0.0
-mysql_root_password=
-mysql_sstuser_password=
-mysql_morpheus_password=
+mysql_root_password=test
+mysql_sstuser_password=test
+mysql_morpheus_password=test
 
 [rabbit:vars]
-r_release=v3.6.x
-r_rpm=rabbitmq-server-3.6.16-1
+r_release=v3.9.4
+r_rpm=rabbitmq-server-3.9.4-1
 
 [elasticsearch:vars]
 jdk_version=1.8.0-openjdk

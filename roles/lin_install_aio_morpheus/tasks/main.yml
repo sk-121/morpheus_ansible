@@ -1,0 +1,42 @@
+---
+- name: MAIN | Include gate.
+  include: gate.yml
+
+- name: MAIN | Block for RHEL variant install.
+  block:
+    - name: MAIN | Download the RPM
+      get_url:
+        url: https://downloads.morpheusdata.com/files/morpheus-appliance-{{ m_release }}.el{{ ansible_distribution_major_version }}.x86_64.rpm 
+        dest: /tmp/morpheus-appliance-{{ m_release }}.el{{ ansible_distribution_major_version }}.x86_64.rpm
+
+    - name: MAIN | Install Morpheus RPM.
+      yum:
+        name: /tmp/morpheus-appliance-{{ m_release }}.el{{ ansible_distribution_major_version }}.x86_64.rpm
+        state: present
+  when: > 
+    ansible_distribution | lower == 'centos'
+    or ansible_distribution | lower == 'redhat'
+
+- name: MAIN | Block for Debian variant install.
+  block:
+    - name: MAIN | Download the package.
+      get_url:
+        url: https://downloads.morpheusdata.com/files/morpheus-appliance_{{ m_release }}_amd64.deb 
+        dest: /tmp/morpheus-appliance_{{ m_release }}_amd64.deb
+
+    - name: MAIN | Install the package
+      apt:
+        deb: /tmp/morpheus-appliance_{{ m_release }}_amd64.deb
+  when: > 
+    ansible_distribution | lower == 'ubuntu'
+
+- name: MAIN | RUN morpheus-ctl reconfigure.
+  command: 'morpheus-ctl reconfigure'
+  register: morph_config_out
+
+- name: MAIN | Debug msg out for reconfigure. 
+  debug:
+    msg: 
+      - "Morpheus reconfigure output"
+      - "{{ morph_config_out.stdout_lines }}"
+
