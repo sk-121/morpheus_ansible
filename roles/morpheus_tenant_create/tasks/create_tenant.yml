@@ -29,7 +29,8 @@
         active: true
         customerNumber: '{{ tenant_number | int }}'
         accountName: "{{ tenant_name }}@{{ domain }}"
-        role: 2
+        role:
+          id: 2
   register: tenant_results
 
 - name: Create Tenant | Results of tenant creation
