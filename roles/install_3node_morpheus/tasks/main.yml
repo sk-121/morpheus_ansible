@@ -1,0 +1,49 @@
+---
+# - name: MAIN | Include gate.
+#   include: gate.yml
+
+# - name: MAIN | Install APP 
+#   include: app_install.yml
+#   when: > 
+#     app
+#     and groups['morpheus'] is defined and inventory_hostname in groups['morpheus']
+
+# - name: Main | Block for percona install and setup
+#   block:
+#   - name: Include Percona install
+#     include: "{{ ansible_distribution | lower}}_perc.yml"
+#     when: groups['percona'] is defined and inventory_hostname in groups['percona']
+
+#   - name: Setup Percona for Morpheus
+#     include: morpheus_percona_setup.yml
+#     when: groups['percona'] is defined and inventory_hostname in groups['percona']
+#   when: perc
+# - name: MAIN | Debug 
+#   debug:
+#     msg: 
+#       "Ansible_host From Inventory: {{ hostvars[inventory_hostname].ansible_host }}"
+
+- name: MAIN | Put morpheus.rb on app servers 
+  template:
+    src: morpheus.rb.j2
+    dest: /etc/morpheus/morpheus.rb
+    owner: root
+    group: root
+    mode: 0600
+  when: >
+    groups['morpheus'] is defined and inventory_hostname in groups['morpheus']
+
+
+# - name: MAIN | RUN morpheus-ctl reconfigure.
+#   command: 'morpheus-ctl reconfigure'
+#   register: morph_config_out
+#   tags: install
+
+# - name: MAIN | Debug msg out for reconfigure. 
+#   debug:
+#     msg: 
+#       - "Morpheus reconfigure output"
+#       - "{{ morph_config_out.stdout_lines }}"
+#   tags: debug
+
+

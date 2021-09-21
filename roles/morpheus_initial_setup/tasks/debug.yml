@@ -1,0 +1,6 @@
+- name: DEBUG | Output status of ping check on website
+  debug:
+    msg:
+      - "{{ ping_chk }}"
+  tags: debug
+  

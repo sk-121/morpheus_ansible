@@ -1,0 +1,49 @@
+- name: Install Morpheus
+  hosts: all
+  become: True
+  pre_tasks:
+    - name: include global_vars.yml
+      include_vars: ./vars/global_vars.yml
+
+    - name: Get packages
+      package_facts:
+      
+  tasks:
+    - name: Install AIO Morpheus
+      include_role: 
+        name: install_aio_morpheus
+        apply:
+          tags:
+            - AIO
+            - install
+            - debug
+      tags: AIO
+
+    - name: Install 3Node HA Morpheus
+      include_role:
+        name: install_3node_morpheus
+        apply:
+          tags:
+          - 3node
+      tags: 3node
+
+    - name: Install Full HA Morpheus
+      include_role: 
+        name: install_fullha_morpheus
+        apply:
+          tags: 
+            - full
+            - install
+            - debug
+      tags: full
+
+    - name: Morpheus Setup
+      include_role:
+        name: morpheus_setup
+        apply:
+          tags:
+            - setup
+            - debug
+      tags: setup
+
+      

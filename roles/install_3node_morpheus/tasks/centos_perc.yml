@@ -69,10 +69,9 @@
   no_log: true
   when: p_release == "pxc-80"
 
-- name: Percona | Get the temporary password for "{{ release }}"
+- name: Percona | Get the temporary password for "{{ p_release }}"
   shell: "grep 'temporary password' /var/log/mysqld.log | awk -F' ' '{print $11}' | tr -d '[:blank:]'"
   register: mysql_root_temp_password
-  no_log: true
   when: p_release == "pxc-57"
 
 - name: Percona | Template creds
@@ -87,6 +86,11 @@
   shell: 'mysql -u root -e "ALTER USER ''root''@''localhost'' IDENTIFIED BY ''{{ mysql_root_password }}''" --connect-expired-password'
   register: reset_results
   ignore_errors: True
+
+- name: Percona | status of reset command
+  debug: 
+    msg:
+      - "{{ reset_results.stdout_lines }}"
 
 - name: Percona | Run query for testing
   mysql_query:

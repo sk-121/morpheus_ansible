@@ -1,0 +1,16 @@
+- name: INITIAL SETUP | Call API To do init tenant setup
+  uri:
+    url: "{{ m_base_url }}/api/setup/init"
+    method: POST
+    body_format: json
+    body:
+      applianceName: "{{ m_base_url }}"
+      applianceUrl: "{{ m_base_url }}"
+      accountName: "root"
+      username: "admin"
+      password: "{{ m_password }}"
+      email: "admin@morpheusdata.com"
+      firstName: "Admin"
+    follow_redirects: true
+    validate_certs: false
+  when: ping_chk.json.setupNeeded

@@ -1,0 +1,76 @@
+- name: morphues_db_setup | Add Global my.cnf
+  template:
+    src: perc.my.cnf.j2
+    dest: /etc/my.cnf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: morphues_db_setup | Setup for p_node1
+  block:
+  - name: Bootstrap the first node
+    service: 
+      name: mysql@bootstrap.service
+      state: started
+
+  - name: morphues_db_setup | Create morpheus database
+    mysql_db:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      name: morpheus
+      state: present
+      encoding: utf8
+
+  - name: morphues_db_setup | Create morpheus user
+    mysql_user:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      name: morpheus
+      priv: '*.*:ALL'
+      password: "{{ mysql_morpheus_password }}"
+      state: present
+
+  - name: morphues_db_setup | Run query for testing
+    mysql_query:
+      login_user: root
+      login_password: "{{ mysql_root_password }}"
+      query: FLUSH PRIVILEGES
+  when: hostvars[inventory_hostname].node == 'node01'
+
+- name: morphues_db_setup | Certs Fetch from remote
+  fetch:
+    src: "/var/lib/mysql/{{ item }}" 
+    dest: "/tmp/{{ hostvars['p_node1'].node }}_{{ item }}"
+  with_items:
+    - ca.pem
+    - server-cert.pem
+    - server-key.pem
+
+- name: morphues_db_setup | Certs Copy to remote
+  copy:
+    src: "/tmp/{{ hostvars['p_node1'].node }}_{{ item }}/p_node1/var/lib/mysql/{{ item }}"
+    dest: "/var/lib/mysql/{{ item }}"
+    backup: True
+  with_items:
+    - ca.pem
+    - server-cert.pem
+    - server-key.pem
+
+- name: morphues_db_setup | Start mysql on nodes
+  service:
+    name: mysql
+    state: started
+  when: >
+    hostvars[inventory_hostname].node != 'node01'
+
+- name: morphues_db_setup | Stop master bootstrap
+  service:
+    name: mysql@bootstrap.service
+    state: stopped
+  when: hostvars[inventory_hostname].node == 'node01'
+
+- name: morphues_db_setup | Start mysql on master
+  service: 
+    name: mysql
+    state: started
+  when: hostvars[inventory_hostname].node == 'node01'

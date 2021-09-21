@@ -1,0 +1,16 @@
+# main tasks file
+---
+- name: MAIN | Include gate.
+  include: gate.yml
+  tags: always
+
+- name: MAIN | Include Debug.
+  include: debug.yml
+  tags: debug
+
+- name: MAIN | Intial Setup.
+  include_tasks:
+    file: initial_setup.yml
+    apply:
+      tags: install
+  tags: initial

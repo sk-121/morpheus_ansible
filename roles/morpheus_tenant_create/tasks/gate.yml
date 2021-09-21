@@ -1,0 +1,14 @@
+# File for gate testing before running a role on server
+- name: GATE | Testing for website to be up
+  uri:
+    url: "{{ m_base_url }}/api/ping"
+    method: GET
+    validate_certs: false
+  failed_when: false
+  register: ping_chk
+
+- name: GATE | Assert that website is reachable
+  assert:
+    that: ping_chk.status == 200
+    fail_msg: "Morpheus was not reachable at {{ m_base_url }} status code was {{ ping_chk.status }}"
+    success_msg: "I was able contact {{ m_base_url }}"

@@ -1,0 +1,39 @@
+- name: Get Access token
+  uri:
+    url: "{{ m_base_url }}/oauth/token?grant_type=password&scope=write&client_id=morph-api"
+    follow_redirects: true
+    validate_certs: false
+    body_format: form-urlencoded
+    body:
+      username: "{{ username }}"
+      password: "{{ password }}"
+      enter: Log in
+    method: POST
+  no_log: true
+  register: login
+
+- name: Create Tenant | Call API to do tenant setup
+  uri:
+    url: "{{ m_base_url }}/api/accounts"
+    method: POST
+    headers:
+      Authorization: "BEARER {{ login.json.access_token }}"
+    follow_redirects: true
+    validate_certs: false
+    body_format: json
+    body:
+      account:
+        name: "{{ tenant_name }}"
+        description: "{{ tenant_description }}"
+        subdomain: "{{ tenant_subdomain }}"
+        active: true
+        customerNumber: '{{ tenant_number | int }}'
+        accountName: "{{ tenant_name }}@{{ domain }}"
+  register: tenant_results
+
+- name: Create Tenant | Results of tenant creation
+  debug:
+    msg:
+      - "Tenant status"
+      - "{{ tenant_results }}"
+

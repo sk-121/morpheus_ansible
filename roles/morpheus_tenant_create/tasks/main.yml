@@ -1,0 +1,19 @@
+# main tasks file
+---
+- name: MAIN | Include gate.
+  include: gate.yml
+  tags: always
+
+- name: MAIN | Include Debug.
+  include_tasks:
+    file: debug.yml
+    apply:
+      tags: debug
+  tags: debug
+
+- name: MAIN | Tenant Setup.
+  include_tasks:
+    file: create_tenant.yml
+    apply:
+      tags: tenant
+  tags: tenant

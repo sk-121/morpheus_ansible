@@ -1,3 +1,10 @@
+- name: Debug Information
+  debug:
+    msg: 
+      - "System information for debugging"
+      - "OS Distrobution: {{ ansible_distribution }}"
+  tags: debug
+
 - name: GATE | Test Operating system Type.
   assert:
     that: > 
@@ -10,7 +17,7 @@
 - set_fact: opt_avail="{{ (item.size_available|float / 1000000000) | round(1, 'common')  }}"
   with_items: '{{ ansible_mounts }}'
   when: item.mount == '/opt'
-  no_log: true
+  no_log: True
 
 - name: GATE | /opt test for space.
   assert:

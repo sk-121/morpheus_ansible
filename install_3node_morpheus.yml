@@ -1,4 +1,4 @@
-- name: Install Moprheus Full HA
+- name: Install Morpheus
   hosts: all
   become: True
   pre_tasks:
@@ -7,8 +7,9 @@
 
     - name: Get packages
       package_facts:
+
+    - name: Install 3Node HA Morpheus
+      include_role:
+        name: install_3node_morpheus
+
       
-  tasks:
-    - name: Install full HA environment
-      include_role: 
-        name: lin_install_ha_morpheus

@@ -1,6 +1,7 @@
 ---
 - name: MAIN | Include gate.
   include: gate.yml
+  tags: always
 
 - name: MAIN | Block for RHEL variant install.
   block:
@@ -16,6 +17,7 @@
   when: > 
     ansible_distribution | lower == 'centos'
     or ansible_distribution | lower == 'redhat'
+  tags: install
 
 - name: MAIN | Block for Debian variant install.
   block:
@@ -29,14 +31,17 @@
         deb: /tmp/morpheus-appliance_{{ m_release }}_amd64.deb
   when: > 
     ansible_distribution | lower == 'ubuntu'
+  tags: install
 
 - name: MAIN | RUN morpheus-ctl reconfigure.
   command: 'morpheus-ctl reconfigure'
   register: morph_config_out
+  tags: install
 
 - name: MAIN | Debug msg out for reconfigure. 
   debug:
     msg: 
       - "Morpheus reconfigure output"
       - "{{ morph_config_out.stdout_lines }}"
+  tags: debug
 

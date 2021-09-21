@@ -1,0 +1,6 @@
+# main file for defaults for vars
+m_release: 5.3.2-1
+app: false
+perc: false
+rabbit: false
+elastic: false

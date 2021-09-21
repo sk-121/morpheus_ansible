@@ -1,0 +1,29 @@
+- name: Install Morpheus
+  hosts: all
+  become: true
+  pre_tasks:
+    - name: include global_vars.yml
+      include_vars: ./vars/global_vars.yml
+
+    - name: Get packages
+      package_facts:
+
+  tasks:
+    - name: Morpheus initial setup
+      include_role:
+        name: morpheus_initial_setup
+        apply:
+          tags:
+            - inital
+            - debug
+      tags: initial
+
+    - name: Morpheus tenant setup
+      include_role:
+        name: morpheus_tenant_create
+        apply:
+          tags:
+            - tenant
+      tags:
+        - tenant
+        - debug

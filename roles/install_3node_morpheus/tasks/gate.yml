@@ -1,0 +1,64 @@
+- name: Debug Information
+  debug:
+    msg: 
+      - "System information for debugging"
+      - "OS Distrobution: {{ ansible_distribution }}"
+
+- name: GATE | Test Operating system Type.
+  assert:
+    that: > 
+      ansible_distribution | lower == 'centos'
+      or ansible_distribution | lower == 'redhat'
+      or ansible_distribution | lower == 'ubuntu'
+    fail_msg: "Your Linux Distribution is not supported for this role"
+    success_msg: "{{ ansible_distribution }} is supported the install will proceed"
+
+- set_fact: opt_avail="{{ (item.size_available|float / 1000000000) | round(1, 'common')  }}"
+  with_items: '{{ ansible_mounts }}'
+  when: item.mount == '/opt'
+  no_log: True
+
+- name: GATE | /opt test for space.
+  assert:
+    that: 
+      - opt_avail|int >= 5 
+    fail_msg: "There is less than 5GB available to install morpheus into /opt" 
+  when: > 
+    ( ansible_distribution | lower == 'centos' 
+    or ansible_distribution | lower == 'redhat')
+    and ( groups['morpheus'] is defined 
+    and inventory_hostname in groups['morpheus'] )
+
+- name: Gate | Fail if any passwords are empty Please look at the main.yml in vars of the role.
+  assert:
+    that: item
+    msg: "{{ item }} is empty. Please provide a vaule"
+  # no_log: True
+  run_once: True
+  when: >
+    perc
+    and ( ansible_distribution | lower == 'centos' 
+    or ansible_distribution | lower == 'redhat')
+    and ( groups['percona'] is defined 
+    and inventory_hostname in groups['percona'] )
+  with_items:
+    - "{{ mysql_root_password }}"
+    - "{{ mysql_sstuser_password }}"
+    - "{{ mysql_morpheus_password }}"
+  register: passert
+
+- name: General | Get services
+  service_facts:
+
+- name: Gate General | setfacts
+  set_fact:
+    firewall_state: "{{ ansible_facts.services['firewalld.service'].state }}"
+    firewall_status: "{{ ansible_facts.services['firewalld.service'].status }}"
+
+- name: Gate Firewall | Kill the firewall
+  service:
+    name: firewalld
+    state: stopped
+    enabled: false
+  when: firewall_state == 'running'
+

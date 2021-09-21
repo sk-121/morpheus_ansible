@@ -1,0 +1,27 @@
+[morpheus]
+m_node1 ansible_host=10.0.0.219 node=node01
+m_node2 ansible_host=10.0.0.159 node=node02
+m_node3 ansible_host=10.0.0.160 node=node03
+
+[percona]
+p_node1 ansible_host=10.0.0.196 node=node01
+p_node2 ansible_host=10.0.0.229 node=node02
+p_node3 ansible_host=10.0.0.210 node=node03
+
+[rabbit]
+[elasticsearch]
+
+[percona:vars]
+p_release='pxc-57'
+percona_bind_address=0.0.0.0
+mysql_root_password=test
+mysql_sstuser_password=test
+mysql_morpheus_password=test
+
+[rabbit:vars]
+r_release=v3.9.4
+r_rpm=rabbitmq-server-3.9.4-1
+
+[elasticsearch:vars]
+jdk_version=1.8.0-openjdk
+e_version=7.11.2
