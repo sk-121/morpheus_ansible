@@ -35,5 +35,6 @@
   debug:
     msg:
       - "Tenant status"
-      - "{{ tenant_results }}"
+      - "{{ tenant_results.json }}"
+      - "{{ tenant_results.status }}"
 
