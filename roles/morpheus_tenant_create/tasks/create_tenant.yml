@@ -60,3 +60,33 @@
     - {name: "{{ tenant_name }}-azn-group", description: "Non-Production Group for Azure resources", location: "Azure" }
     - {name: "{{ tenant_name }}-vmn-group", description: "Non-Production Group for VMware resources", location: "VMware" }
 
+- name: Create Tenant | Assign AD auth source
+  uri:
+    url: "{{ m_base_url }}/api/accounts/{{ tenant_results.json.account.id }}/user-sources"
+    method: POST
+    headers:
+      Authorization: "BEARER {{ login.json.access_token }}"
+    follow_redirects: true
+    validate_certs: false
+    body_format: json
+    body:
+      userSource:
+        type: activeDirectory
+        name: 'Default AD'
+        config:
+          url: "{{ ad_url }}"
+          domain: "{{ domain }}"
+          bindingUsername: "{{ ad_user }}"
+          bindingPassword: "{{ ad_password }}"
+          requiredGroup: "{{ ad_group | default('') }}"
+          searchMemberGroups: false
+        roleMappings: 
+          - 2:Tenant Administrator
+        defaultAccountRole:
+          id: 2
+  register: output
+
+- name: output
+  debug: 
+    msg: "{{ output }}"
+
