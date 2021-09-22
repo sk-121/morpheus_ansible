@@ -40,3 +40,18 @@
       - "{{ tenant_results.json }}"
       - "{{ tenant_results.status }}"
 
+- name: Create Tenant | Build Default groups
+  uri:
+    url: "{{ m_base_url }}/api/accounts/{{ tenant_results.json.id }}/groups"
+    method: POST
+    headers:
+      Authorization: "BEARER {{ login.json.access_token }}"
+    follow_redirects: true
+    validate_certs: false
+    body_format: json
+    body:
+      group:
+        name: "{{ tenant_name }}-group"
+        description: "{{ group_description | default('') }}"
+        location: "{{ group_location | default('') }}"
+
