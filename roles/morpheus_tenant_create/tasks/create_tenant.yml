@@ -42,7 +42,7 @@
 
 - name: Create Tenant | Build Default groups
   uri:
-    url: "{{ m_base_url }}/api/accounts/{{ tenant_results.json.id }}/groups"
+    url: "{{ m_base_url }}/api/accounts/{{ tenant_results.json.account.id }}/groups"
     method: POST
     headers:
       Authorization: "BEARER {{ login.json.access_token }}"
@@ -51,7 +51,12 @@
     body_format: json
     body:
       group:
-        name: "{{ tenant_name }}-group"
-        description: "{{ group_description | default('') }}"
-        location: "{{ group_location | default('') }}"
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        location: "{{ item.location }}"
+  with_items:
+    - {name: "{{ tenant_name }}-azp-group", description: "Production Group for Azure resources", location: "Azure" }
+    - {name: "{{ tenant_name }}-vmp-group", description: "Production Group for VMware resources", location: "VMware" }
+    - {name: "{{ tenant_name }}-azn-group", description: "Non-Production Group for Azure resources", location: "Azure" }
+    - {name: "{{ tenant_name }}-vmn-group", description: "Non-Production Group for VMware resources", location: "VMware" }
 
