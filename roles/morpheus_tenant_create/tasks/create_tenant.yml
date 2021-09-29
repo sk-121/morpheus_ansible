@@ -5,8 +5,8 @@
     validate_certs: false
     body_format: form-urlencoded
     body:
-      username: "{{ username }}"
-      password: "{{ password }}"
+      username: "{{ m_username }}"
+      password: "{{ m_password }}"
       enter: Log in
     method: POST
   no_log: true
@@ -23,9 +23,9 @@
     body_format: json
     body:
       account:
-        name: "{{ tenant_name }}"
+        name: "{{ tenant_name }}@{{ domain }}"
         description: "{{ tenant_description }}"
-        subdomain: "{{ tenant_subdomain }}"
+        subdomain: "{{ tenant_name }}"
         active: true
         customerNumber: '{{ tenant_number | int }}'
         accountName: "{{ tenant_name }}@{{ domain }}"
@@ -55,10 +55,10 @@
         description: "{{ item.description }}"
         location: "{{ item.location }}"
   with_items:
-    - {name: "{{ tenant_name }}-azp-group", description: "Production Group for Azure resources", location: "Azure" }
-    - {name: "{{ tenant_name }}-vmp-group", description: "Production Group for VMware resources", location: "VMware" }
-    - {name: "{{ tenant_name }}-azn-group", description: "Non-Production Group for Azure resources", location: "Azure" }
-    - {name: "{{ tenant_name }}-vmn-group", description: "Non-Production Group for VMware resources", location: "VMware" }
+    - {name: "{{ tenant_name }}-azure-prod", description: "Production Group for Azure resources", location: "Azure" }
+    - {name: "{{ tenant_name }}-vmware-prod", description: "Production Group for VMware resources", location: "VMware" }
+    - {name: "{{ tenant_name }}-azure-non-prod", description: "Non-Production Group for Azure resources", location: "Azure" }
+    - {name: "{{ tenant_name }}-vmware-non-prod", description: "Non-Production Group for VMware resources", location: "VMware" }
 
 - name: Create Tenant | Assign AD auth source
   uri:
@@ -73,6 +73,17 @@
       userSource:
         type: activeDirectory
         name: 'Default AD'
+        allowCustomMappings: true
+        roleMappings: [
+          {
+          "mappedRole": {
+            "authority": "Tenant Administrator",
+            "id": 96
+            },
+          "sourceRoleFqn": "CN=MorpheusAdmins,OU=Groups,OU=K24,DC=k24,DC=lan",
+          "sourceRoleName": "MorpheusAdmins"
+          }
+        ]
         config:
           url: "{{ ad_url }}"
           domain: "{{ domain }}"
@@ -80,13 +91,7 @@
           bindingPassword: "{{ ad_password }}"
           requiredGroup: "{{ ad_group | default('') }}"
           searchMemberGroups: false
-        roleMappings: 
-          - 2:Tenant Administrator
         defaultAccountRole:
           id: 2
-  register: output
-
-- name: output
-  debug: 
-    msg: "{{ output }}"
+  register: user_source
 

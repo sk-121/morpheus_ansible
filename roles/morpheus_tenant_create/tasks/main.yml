@@ -1,7 +1,7 @@
 # main tasks file
 ---
 - name: MAIN | Include gate.
-  include: gate.yml
+  include_tasks: gate.yml
   tags: always
 
 - name: MAIN | Include Debug.
