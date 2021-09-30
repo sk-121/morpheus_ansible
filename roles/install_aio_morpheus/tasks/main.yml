@@ -33,7 +33,7 @@
     ansible_distribution | lower == 'ubuntu'
   tags: install
 
-- name: MAIN | RUN morpheus-ctl reconfigure.
+- name: MAIN | RUN morpheus-ctl reconfigure. ( This takes a while be patient )
   command: 'morpheus-ctl reconfigure'
   register: morph_config_out
   tags: install

@@ -14,9 +14,10 @@
         name: morpheus_initial_setup
         apply:
           tags:
-            - inital
-            - debug
-      tags: initial
+            - initial
+      tags: 
+        - initial
+        - debug
 
     - name: Morpheus tenant setup
       include_role:

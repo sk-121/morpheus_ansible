@@ -83,7 +83,9 @@ OS's currently supported"
 ```
 ### Ansible Base Command Line
 
-* ansible-playbook -i machinename, lin_install_aio_morpheus.yml -u username -k
+```
+ansible-playbook -i machinename, lin_install_aio_morpheus.yml -u <username> -k
+```
 
 ### Ansible AWX
 

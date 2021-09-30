@@ -11,6 +11,4 @@
 - name: MAIN | Intial Setup.
   include_tasks:
     file: initial_setup.yml
-    apply:
-      tags: install
   tags: initial

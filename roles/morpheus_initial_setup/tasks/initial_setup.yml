@@ -6,7 +6,7 @@
     body:
       applianceName: "{{ m_base_url }}"
       applianceUrl: "{{ m_base_url }}"
-      accountName: "root"
+      accountName: "Master Tenant"
       username: "admin"
       password: "{{ m_password }}"
       email: "admin@morpheusdata.com"

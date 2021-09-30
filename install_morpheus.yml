@@ -25,7 +25,8 @@
         apply:
           tags:
           - 3node
-      tags: 3node
+      tags: 
+        - 3node
 
     - name: Install Full HA Morpheus
       include_role: 
@@ -35,15 +36,17 @@
             - full
             - install
             - debug
-      tags: full
+      tags: 
+        - full
 
-    - name: Morpheus Setup
+    - name: Morpheus Initial Setup
       include_role:
-        name: morpheus_setup
+        name: morpheus_initial_setup
         apply:
           tags:
             - setup
             - debug
-      tags: setup
+      tags: 
+        - setup
 
       
