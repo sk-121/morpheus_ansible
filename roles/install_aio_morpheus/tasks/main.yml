@@ -38,10 +38,10 @@
   register: morph_config_out
   tags: install
 
-- name: MAIN | Debug msg out for reconfigure. 
-  debug:
-    msg: 
-      - "Morpheus reconfigure output"
-      - "{{ morph_config_out.stdout_lines }}"
-  tags: debug
+# - name: MAIN | Debug msg out for reconfigure. 
+#   debug:
+#     msg: 
+#       - "Morpheus reconfigure output"
+#       - "{{ morph_config_out.stdout_lines }}"
+#   tags: debug
 

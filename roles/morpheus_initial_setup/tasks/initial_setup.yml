@@ -1,3 +1,14 @@
+- name: INITIAL SETUP | Set password fact
+  set_fact:
+    set_m_password: "{{ m_password }}"
+
+- name: INITIAL SETUP | print generated password
+  debug:
+    msg: 
+      - "test"
+      - "{{ set_m_password }}"
+  
+
 - name: INITIAL SETUP | Call API To do init tenant setup
   uri:
     url: "{{ m_base_url }}/api/setup/init"
@@ -8,7 +19,7 @@
       applianceUrl: "{{ m_base_url }}"
       accountName: "Master Tenant"
       username: "admin"
-      password: "{{ m_password }}"
+      password: "{{ set_m_password }}"
       email: "admin@morpheusdata.com"
       firstName: "Admin"
     follow_redirects: true

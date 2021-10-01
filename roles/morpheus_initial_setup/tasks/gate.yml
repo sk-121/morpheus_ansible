@@ -6,6 +6,10 @@
     validate_certs: false
   failed_when: false
   register: ping_chk
+  until: ping_chk.status == 200
+  retries: 10
+  delay: 60
+
 
 - name: GATE | Assert that website is reachable
   assert:
