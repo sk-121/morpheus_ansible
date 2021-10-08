@@ -4,10 +4,10 @@
   vars_prompt:
     - name: m_username
       prompt: Please enter Morpheus Username to login with
-      private: no
+      private: false
     - name: m_password
       prompt: Please enter Morpheus Password
-      private: yes  
+      private: true
 
   pre_tasks:
     - name: PLAY | include global_vars.yml
@@ -17,13 +17,23 @@
       package_facts:
 
   tasks:
+    - name: PLAY | Help message
+      debug:
+        msg:
+          - Help message for Tags on play and roles
+          - initial - Creates initial setup for morpheus
+          - debug   - Prints debug messages
+          - tenant  - Creates tenant based off inputs
+      tags:
+        - help
+
     - name: PLAY | Morpheus initial setup
       include_role:
         name: morpheus_initial_setup
         apply:
           tags:
             - initial
-      tags: 
+      tags:
         - initial
         - debug
 

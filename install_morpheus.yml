@@ -9,6 +9,18 @@
       package_facts:
       
   tasks:
+    - name: PLAY | Help message
+      debug:
+        msg:
+          - This is the help message
+          - Tags 
+          - AIO - install the morpheus All in One appliance
+          - 3node - install the morpheus 3 node method
+          - full - install morpheus with a full HA with X number of nodes
+          - setup - complete the morpheus_initial_setup
+      tags:
+        - help
+          
     - name: Install AIO Morpheus
       include_role: 
         name: install_aio_morpheus

@@ -30,7 +30,7 @@
         customerNumber: '{{ tenant_number | int }}'
         accountName: "{{ tenant_name }}@{{ domain }}"
         role:
-          id: 2
+          id: 130
   register: tenant_results
 
 - name: Create Tenant | Results of tenant creation
@@ -79,7 +79,7 @@
           "mappedRole": {
             "authority": "Tenant Administrator",
             "id": 96
-            },
+          },
           "sourceRoleFqn": "CN=MorpheusAdmins,OU=Groups,OU=K24,DC=k24,DC=lan",
           "sourceRoleName": "MorpheusAdmins"
           }
@@ -94,4 +94,3 @@
         defaultAccountRole:
           id: 2
   register: user_source
-
